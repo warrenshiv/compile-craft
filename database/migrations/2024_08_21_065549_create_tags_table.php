@@ -11,8 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('event_outcome_images', function (Blueprint $table) {
+        Schema::create('tags', function (Blueprint $table) {
             $table->id();
+            $table->string('name')->unique();
+            $table->foreignId('user_id') // Add the user_id column
+            ->constrained('users') // Reference the 'users' table
+            ->onDelete('cascade');
             $table->timestamps();
         });
     }
@@ -22,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('event_outcome_images');
+        Schema::dropIfExists('tags');
     }
 };

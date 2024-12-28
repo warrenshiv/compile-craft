@@ -11,8 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('audiences', function (Blueprint $table) {
+        Schema::create('taggables', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('tag_id')->constrained()->onDelete('cascade');
+            $table->morphs('taggable'); // Creates two columns: taggable_id and taggable_type
             $table->timestamps();
         });
     }
@@ -22,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('audiences');
+        Schema::dropIfExists('taggables');
     }
 };

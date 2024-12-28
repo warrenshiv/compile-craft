@@ -13,6 +13,13 @@ return new class extends Migration
     {
         Schema::create('activities', function (Blueprint $table) {
             $table->id();
+            $table->string('title');
+            $table->text('description');
+            $table->foreignId('project_id')->constrained('projects')->onDelete('cascade');
+            $table->date('start_date');
+            $table->date('end_date');
+            $table->string('report')->nullable(); // Optional
+            $table->foreignId('audience_id')->constrained('audiences')->onDelete('cascade');
             $table->timestamps();
         });
     }

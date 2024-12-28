@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Controllers;
 
 use App\Models\Role;
@@ -12,15 +11,8 @@ class RoleController extends Controller
      */
     public function index()
     {
-        //
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
+        $roles = Role::all();
+        return response()->json($roles);
     }
 
     /**
@@ -28,38 +20,43 @@ class RoleController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validatedData = $request->validate([
+            'name' => 'required|string|max:255|unique:roles,name',
+        ]);
+
+        $role = Role::create($validatedData);
+        return response()->json($role, 201);
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(Role $role)
+    public function show(Role $role)  // Route model binding
     {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Role $role)
-    {
-        //
+        $role->load('permissions.action','permissions.entity'); // Eager load permissions
+        return response()->json($role);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Role $role)
+    public function update(Request $request, Role $role)  // Route model binding
     {
-        //
+        $validatedData = $request->validate([
+            'name' => 'required|string|max:255|unique:roles,name,' . $role->id,
+        ]);
+
+        $role->update($validatedData);
+        return response()->json($role);
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Role $role)
+    public function destroy(Role $role)  // Route model binding
     {
-        //
+        $role->delete();
+
+        return response()->json(['message' => 'Role deleted successfully']);
     }
 }

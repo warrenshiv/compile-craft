@@ -12,15 +12,8 @@ class PermissionController extends Controller
      */
     public function index()
     {
-        //
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
+        $permissions = Permission::with(['action', 'entity', 'role'])->get();
+        return response()->json($permissions);
     }
 
     /**
@@ -28,7 +21,14 @@ class PermissionController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validatedData = $request->validate([
+            'role_id' => 'required|exists:roles,id',
+            'action_id' => 'required|exists:actions,id',
+            'entity_id' => 'required|exists:entities,id',
+        ]);
+
+        $permission = Permission::create($validatedData);
+        return response()->json($permission, 201);
     }
 
     /**
@@ -36,15 +36,8 @@ class PermissionController extends Controller
      */
     public function show(Permission $permission)
     {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Permission $permission)
-    {
-        //
+        $permission->load(['action', 'entity', 'role']);
+        return response()->json($permission);
     }
 
     /**
@@ -52,7 +45,14 @@ class PermissionController extends Controller
      */
     public function update(Request $request, Permission $permission)
     {
-        //
+        $validatedData = $request->validate([
+            'role_id' => 'required|exists:roles,id',
+            'action_id' => 'required|exists:actions,id',
+            'entity_id' => 'required|exists:entities,id',
+        ]);
+
+        $permission->update($validatedData);
+        return response()->json($permission);
     }
 
     /**
@@ -60,6 +60,7 @@ class PermissionController extends Controller
      */
     public function destroy(Permission $permission)
     {
-        //
+        $permission->delete();
+        return response()->json(['message' => 'Permission deleted successfully']);
     }
 }

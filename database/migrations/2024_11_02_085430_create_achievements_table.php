@@ -11,8 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('document_versions', function (Blueprint $table) {
+        Schema::create('achievements', function (Blueprint $table) {
             $table->id();
+            $table->text('description'); // Optional
+            $table->foreignId('project_id')->constrained('projects')->onDelete('cascade');
+            $table->string('category'); // Changed to string
             $table->timestamps();
         });
     }
@@ -22,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('document_versions');
+        Schema::dropIfExists('achievements');
     }
 };

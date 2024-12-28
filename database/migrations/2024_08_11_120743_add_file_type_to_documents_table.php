@@ -11,9 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('event_outcomes', function (Blueprint $table) {
-            $table->id();
-            $table->timestamps();
+        Schema::table('documents', function (Blueprint $table) {
+            $table->string('file_type')->after('file_path');
         });
     }
 
@@ -22,6 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('event_outcomes');
+        Schema::table('documents', function (Blueprint $table) {
+            $table->dropColumn('file_type');
+        });
     }
 };

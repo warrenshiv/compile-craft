@@ -3,63 +3,54 @@
 namespace App\Http\Controllers;
 
 use App\Models\Achievement;
+use App\Models\Project;
 use Illuminate\Http\Request;
 
 class AchievementController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    public function index(Project $project)
     {
-        //
+        // Get achievements for the specific project
+        return $project->achievements()->get();
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    public function store(Request $request, Project $project)
     {
-        //
+        $request->validate([
+            'description' => 'required|string',
+            'category' => 'required|string|max:255|in:main,other',
+        ]);
+
+        // Create a new achievement for the specific project
+        $achievement = $project->achievements()->create($request->all());
+
+        return $achievement;
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
+    public function show(Project $project, Achievement $achievement)
     {
-        //
+        // Load the achievement associated with the given project
+        return $achievement->load('project');
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Achievement $achievement)
+    public function update(Request $request, Project $project, Achievement $achievement)
     {
-        //
+        $request->validate([
+            'description' => 'required|string',
+            'category' => 'required|string|max:255|in:main,other',
+        ]);
+
+        // Update the achievement for the specific project
+        $achievement->update($request->all());
+
+        return $achievement;
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Achievement $achievement)
+    public function destroy(Project $project, Achievement $achievement)
     {
-        //
-    }
+        // Delete the achievement for the specific project
+        $achievement->delete();
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Achievement $achievement)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Achievement $achievement)
-    {
-        //
+        return response()->noContent();
     }
 }
